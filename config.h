@@ -1,7 +1,8 @@
 /********************************************************************************************
-* Supersingular Isogeny Key Encapsulation Library
+* Supersingular Isogeny Group Key Library
 *
 * Abstract: configuration file and platform-dependent macros
+* This file is copied from the SIKE library developed by Microsoft Research
 *********************************************************************************************/  
 
 #ifndef __CONFIG_H__

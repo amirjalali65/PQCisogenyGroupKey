@@ -2,7 +2,7 @@
 * Supersingular Isogeny Group Key Agreement Library
 *
 * Abstract: internal header file for P747
-* This file is created by modifying the P747 file in SIKE package developed by Microsoft Research
+* This file is created by modifying the P751_internal.h file in SIKE package developed by Microsoft Research
 *
 *   Modified by Amir Jalali             ajalali2016@fau.edu
 *********************************************************************************************/  
@@ -272,25 +272,30 @@ void inv_3_way(f2elm_t z1, f2elm_t z2, f2elm_t z3);
 // Given the x-coordinates of P, Q, and R, returns the value A corresponding to the Montgomery curve E_A: y^2=x^3+A*x^2+x such that R=Q-P on E_A.
 void get_A(const f2elm_t xP, const f2elm_t xQ, const f2elm_t xR, f2elm_t A);
 
+// 6-way simultaneous inversion
 void inv_6_way(f2elm_t z1, f2elm_t z2, f2elm_t z3, f2elm_t z4, f2elm_t z5, f2elm_t z6);
 
+// Criss cross operation for computing 5-isogenies
 void criss_cross(f2elm_t alpha, f2elm_t beta, f2elm_t gamma, f2elm_t delta);
 
-void eval_5_isog(const point_proj_t P, const point_proj_t Pdbl, point_proj_t Q);
+// Computes the 5-isogeny R=phi(X:Z), given two projective points P=(X3:Z3) and Pdbl=(X'3:Z'3) of order 3 on a Montgomery curve where Pdbl = [2]P
+void eval_5_isog(const point_proj_t P, const point_proj_t Pdbl, point_proj_t R);
 
+// Compute Montgomery curve projective coefficient from a projective point alpha of order 2 on the curve 
 void get_a_from_alpha(const point_proj_t alpha, f2elm_t A24plus, f2elm_t C24);
 
+// Given the P, Q, and R, returns the value A24plus and C24 corresponding to the Montgomery curve E_A: Cy^2=Cx^3+A*x^2+Cx such that R=Q-P on E_A.
 void get_A_projective(const point_proj_t P, const point_proj_t Q, const point_proj_t R, f2elm_t A24plus, f2elm_t C24);
 
+// Simultaneous doubling and differential addition using projective curve coefficients.
 void xDBLADD_AC24(point_proj_t P, point_proj_t Q, const point_proj_t xPQ, const f2elm_t A24plus, const f2elm_t C24);
 
+// Quintupling of a Montgomery point in projective coordinates (X:Z).
 void xQNTPL(const point_proj_t P, point_proj_t Q, const f2elm_t A24plus, const f2elm_t C24);
 
-void xQNTPL_ladder(const point_proj_t P, point_proj_t R, const f2elm_t A24plus, const f2elm_t C24);
-
+// Computes [5^e](X:Z) on Montgomery curve with projective constant via e repeated quintuplings.
 void xQNTPLe(const point_proj_t P, point_proj_t Q, const f2elm_t A24plus, const f2elm_t C24, const int e);
 
 void LADDER3PT(const f2elm_t xP, const f2elm_t xQ, const f2elm_t xPQ, const digit_t* m, const unsigned int AliceOrBobOrEve, point_proj_t R, const f2elm_t A);
-
 
 #endif

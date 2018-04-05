@@ -2,8 +2,8 @@
 * Supersingular Isogeny Group Key Agreement Library
 *
 * Abstract: core functions over GF(p) and GF(p^2)
-* This file is created from the SIKE library developed by Microsoft Research
-* The inversion function is modified since the prime is different from P751
+* This file is the modified version of fpx.c from the SIKE library developed by Microsoft Research
+* The modifications are based on the p747 prime
 *
 * Modified by Amir Jalali               ajalali2016@fau.edu
 *********************************************************************************************/
@@ -81,12 +81,7 @@ void fpinv_mont(felm_t a)
 { // Field inversion using Montgomery arithmetic, a = a^(-1)*R mod p.
     felm_t tt;
 
-    //fpcopy(a, tt);
     fpinv_chain_mont(a);
-    //fpsqr_mont(tt, tt);
-    //fpsqr_mont(tt, tt);
-    //fpmul_mont(a, tt, a);
-	//fpcopy(tt, a);
 }
 
 

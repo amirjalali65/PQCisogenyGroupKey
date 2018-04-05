@@ -1,13 +1,12 @@
 /******************************************************************************************************
  *      Supersingular Isogeny Grroup-Key implementation
  * 
- *      Author: Amir Jalali         ajalali2016@fau.edu
- *      
  *  This file contains the main operations for performing an instance of supersingular isogeny 
  *  group key operations between three parties. The computation of 3- and 4- isogenies are 
  *  implemented based on the SIKE and SIDH implementation developed by Microsoft Research.
  *  This work is an extension to the SIDH library developed by Microsoft Research.
- * 
+ *
+ *  Modified and created by Amir Jalali             ajalali2016@fau.edu 
  ******************************************************************************************************/
 
 #include "P747_internal.h"
@@ -341,9 +340,7 @@ int EphemeralKeyGeneration_C(const unsigned char* PrivateKeyC, unsigned char* Pu
         index = pts_index[npts-1];
         npts -= 1;
     }
-	// Retrieve curve coefficient A from alpha
 	xDBL(R, R_2, A24plus, C24);
-    
     eval_5_isog(R, R_2, phiPA);
     eval_5_isog(R, R_2, phiQA);
     eval_5_isog(R, R_2, phiRA);
@@ -428,7 +425,6 @@ int BSharedPublicFromA(const unsigned char* PrivateKeyB, const unsigned char* Pu
 		index = pts_index[npts - 1];
 		npts -= 1;
 	}
-
 	get_3_isog(R, A24minus, A24plus, coeff);
 	eval_3_isog(phiA_PC, coeff);
 	eval_3_isog(phiA_QC, coeff);
@@ -639,7 +635,6 @@ int ASharedSecretFromC(const unsigned char* PrivateKeyA, const unsigned char* Pu
         index = pts_index[npts-1];
         npts -= 1;
     }
-
     get_4_isog(R, A24plus, C24, coeff); 
     eval_4_isog(phiC_PB, coeff);
     eval_4_isog(phiC_QB, coeff);
@@ -687,7 +682,6 @@ int ASharedSecretFromC(const unsigned char* PrivateKeyA, const unsigned char* Pu
         index = pts_index[npts-1];
         npts -= 1;
     }
-	
     get_4_isog(R, A24plus, C24, coeff); 
     fp2div2(C24, C24);                                                
     fp2sub(A24plus, C24, A24plus);                              
@@ -741,7 +735,6 @@ int BSharedSecretFromA(const unsigned char* PrivateKeyB, const unsigned char* Sh
         index = pts_index[npts-1];
         npts -= 1;
     }
-    
 	get_3_isog(R, A24minus, A24plus, coeff);    
     fp2add(A24plus, A24minus, A);                 
     fp2add(A, A, A);

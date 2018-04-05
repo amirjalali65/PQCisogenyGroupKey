@@ -9,7 +9,6 @@
 
 #include "P747_internal.h"
 
-
 // Encoding of field elements, elements over Z_order, elements over GF(p^2) and elliptic curve points:
 // --------------------------------------------------------------------------------------------------
 // Elements over GF(p) and Z_order are encoded with the least significant octet (and digit) located at the leftmost position (i.e., little endian format). 
@@ -18,7 +17,6 @@
 // Internally, the number of digits used to represent all these elements is obtained by approximating the number of bits to the immediately greater multiple of 32.
 // For example, a 747-bit field element is represented with Ceil(747 / 64) = 12 64-bit digits or Ceil(747 / 32) = 24 32-bit digits.
 
-//
 // Curve isogeny system "SIGKp747". Base curve: Montgomery curve By^2 = Cx^3 + Ax^2 + Cx defined over GF(p747^2), where A=0, B=1, C=1 and   
 //
          
@@ -34,9 +32,7 @@ const uint64_t Alice_order[NWORDS64_ORDER]       = { 0x0000000000000000, 0x00000
 const uint64_t Bob_order[NWORDS64_ORDER]         = { 0x0000000000000000, 0x6A51808385F9D8A3, 0xD30435F904DF3586, 0x1A029D363E05965E, 0x0005A76A2991D4FE };
 // Order of Eve's subgroup
 const uint64_t Eve_order[NWORDS64_ORDER]         = { 0x0000000000000000, 0xFB20C48AD00585E5, 0x3ED67BA06FA1853C, 0x3E12F2967B66737E, 0x000DF3D5E9BC0F65 };
-// Alice's generator values {XPA0 + XPA1*i, XQA0, XRA0 + XRA1*i} in GF(p747^2), expressed in Montgomery representation
-// QA y-coordinate is computed as sqr(11^3 + 11) as the base and then multiplied by (3^153*5^105), leading to a point with
-// only a single field element in x-coordinate and has the order equal to 2^260
+// Alice's generator values {XPA0 + XPA1*i, XQA0, XRA0 + XRA1*i} in GF(p747^2), expressed in normal representation
 const uint64_t A_gen[5 * NWORDS64_FIELD]         = { 0x146A64BF56F93A7C, 0xD2834AEB7FAFAD64, 0xA813E25F64724ECA, 0x263CAEFDCFBC9279, 0x94D8C091FBE820C2, 0xF3FD5F9EB76FD467,
 													 0x53FAD378BD2824EA, 0xCA4BF0D29F09B061, 0x3A3B1CC4F0B926F7, 0x768CC2152752FA5E, 0xED1D40B964662E78, 0x00000120A5B313BA,   // XPA0
 													 0x1E6A90AEC79F4435, 0x636DCCE289A19199, 0x25A5C1A36709082C, 0xA1F0B1F01A226759, 0x810D8C4C978BD734, 0x175A804F0A2D4C37,
@@ -47,9 +43,7 @@ const uint64_t A_gen[5 * NWORDS64_FIELD]         = { 0x146A64BF56F93A7C, 0xD2834
 													 0xB11FDAF64CEF67EE, 0x64E250AC0B9FA8F2, 0x6CCDDDD25F56A1E6, 0xC2F7EFE77827FB7D, 0x9578C5F557EB62D9, 0x000004723AC260D5,   // XRA0
 													 0x74DC8E0FD9052C39, 0x78A4DED7648B4B52, 0x19BD6A179F43E717, 0x821C4EAC5AFC0DAD, 0xF896042098451E78, 0xD3553C0D99F4933B,
 													 0xA3BCC31111792301, 0x4F1AB67D511326EE, 0x54452EAD8482B25F, 0x1B99283D8D928DF4, 0x9003A7877DAE4AF9, 0x00000270E6E06619 }; // XRA1
-// Bob's generator values {XPB0 + XPB1*i, XQB0, XRB0 + XRB1*i} in GF(p747^2), expressed in Montgomery representation
-// QB is constructed from Q = (11, ...) multiplied by (2^260*5^105) which is a point with only one element for its 
-// x-coordinate and it has the order of 3^153
+// Bob's generator values {XPB0 + XPB1*i, XQB0, XRB0 + XRB1*i} in GF(p747^2), expressed in normal representation
 const uint64_t B_gen[5 * NWORDS64_FIELD]         = { 0x9EE4AC530EA02812, 0x92C080440723255B, 0x662C55DBA078BBE3, 0x48B22316211DBAD4, 0xDE356317C914373B, 0xF78ED441F1DF05D0,
 													 0x3111DFCCECCBD48C, 0x6720B43876BD4C8C, 0x99EE79475E08834F, 0x11DBD2F070A76299, 0x2F589404C5A6A8B2, 0x000004C377C95424,   // XPB0
 													 0x1C7D4234E5FDCC74, 0x4DDAC3F7ADC53F78, 0xA84B1D9E5F46AB8E, 0xFC50A0657655B9C2, 0xF888E86F40EABDC1, 0xA496C18DA958AB38,
@@ -60,9 +54,7 @@ const uint64_t B_gen[5 * NWORDS64_FIELD]         = { 0x9EE4AC530EA02812, 0x92C08
 													 0x333A0B67E8B38716, 0x4DA35A16E089A0E6, 0xEAB4838DAD241FC4, 0x2BB1E64C0B454D30, 0xC3B2FB82628FA06E, 0x0000031431B95584,   // XRB0
 													 0x364F7B32FAE86420, 0x4263E9F2477348EE, 0x2B81A33361D8687A, 0x64911A7CD8084228, 0x66AFB18A486140E8, 0xF2184390441F7512,
 													 0xB5DE065CCD4F116E, 0xA43BDE0F0B4A006C, 0xD608309796947758, 0x397340ABDCD96956, 0x424B5DAE0CB63784, 0x000003726280F304 }; // XRB1
-// Eve's generator values {XPC0 + XPC1*i, XQC0, XRC0 + XRC1*i} in GF(p747^2), expressed in Montgomery representation
-// QB is constructed from Q = (11, ...) multiplied by (2^260*3^153) which is a point with only one element for its 
-// x-coordinate and it has the order of 5^105
+// Eve's generator values {XPC0 + XPC1*i, XQC0, XRC0 + XRC1*i} in GF(p747^2), expressed in normal representation
 const uint64_t C_gen[5 * NWORDS64_FIELD]         = { 0xAF69BDDEC9296070, 0x8AC431344B2286BD, 0x3CFA47D203F07AFE, 0x162A8F46E4813F07, 0xAD4DDD2B67753675, 0x0E2EC4FDA5C93F08,
 													 0xA676A39D0B8F01A0, 0xF5ED1D43A66A18AE, 0xA435E81C4D0EB5BB, 0x6CA414465FE77EB5, 0xAA8EB4A039EC4B7D, 0x000004566C7095BA,   // XPC0
 													 0xB38034500C6DA1D2, 0x8F6EC8D9A1F35F28, 0xF8929FCCF0E08F28, 0xE26173136E9C4823, 0x40FCFEF0D82BE6AD, 0xD250DB7DCD87DA8A,
@@ -109,7 +101,6 @@ const unsigned int strat_Eve[MAX_Eve] = {
 15, 17, 18, 18, 18, 18, 18, 18, 18, 18, 19, 19, 19, 20, 21,	22, 22, 22, 22, 23, 
 23, 26, 23, 26, 23, 23, 26, 24, 26, 26, 27, 28, 27, 27, 28,	27, 28, 27, 28, 28,
 28, 28, 29, 29, 31, 31, 31, 34, 34, 34, 34, 34, 34, 34, 34,	34, 34 };
-
 
 // Setting up macro defines and including GF(p), GF(p^2), curve, isogeny and kex functions
 

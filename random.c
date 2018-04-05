@@ -1,5 +1,6 @@
 /********************************************************************************************
 * Hardware-based random number generation function using /dev/urandom
+* This file is copied from the random.c file inside SIKE library developed by Microsoft Research
 *********************************************************************************************/
 
 #include "random.h"

@@ -196,7 +196,7 @@ void inv_3_way(f2elm_t z1, f2elm_t z2, f2elm_t z3)
 }
 
 void inv_6_way(f2elm_t z1, f2elm_t z2, f2elm_t z3, f2elm_t z4, f2elm_t z5, f2elm_t z6)
-{ // 3-way simultaneous inversion
+{ // 6-way simultaneous inversion
   // Input:  z1,z2,z3, z4, z5, z6
   // Output: 1/z1,1/z2,1/z3,1/z4,1/z5,1/z6 (override inputs).
     f2elm_t t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10;
@@ -205,7 +205,7 @@ void inv_6_way(f2elm_t z1, f2elm_t z2, f2elm_t z3, f2elm_t z4, f2elm_t z5, f2elm
     fp2mul_mont(z4, t1, t2);                      // t2 = z1*z2*z3*z4
     fp2mul_mont(z5, t2, t3);                      // t3 = z1*z2*z3*z4*z5
     fp2mul_mont(z6, t3, t4);                      // t4 = z1*z2*z3*z4*z5*z6
-    fp2inv_mont(t4);                           // t4 = 1/(z1*z2*z3*z4*z5*z6)
+    fp2inv_mont(t4);                              // t4 = 1/(z1*z2*z3*z4*z5*z6)
     fp2mul_mont(t4, t3, t5);                      // t5 = 1/z6
     fp2mul_mont(t4, z6, t4);                      // t4 = 1/(z1*z2*z3*z4*z5)
     fp2mul_mont(t4, t2, t6);                      // t6 = 1/z5
@@ -300,8 +300,9 @@ void xDBLADD(point_proj_t P, point_proj_t Q, const f2elm_t xPQ, const f2elm_t A2
 }
 
 void xDBLADD_AC24(point_proj_t P, point_proj_t Q, const point_proj_t PQ, const f2elm_t A24plus, const f2elm_t C24)
-{   // Compute Double and Add using Montgomery formulas considering curve projective coefficient
-    // A24plus = (A + 2C) and C24 = 4C P <- 2P and Q <- P + Q
+{   // Simulteneous doubling and differential addition using Montgomery formulas considering curve projective coefficient
+    // Input: projective Montgomery points P=(XP:ZP) and Q=(XQ:ZQ) and PQ=(XPQ:ZPQ), where PQ = Q - P and projective Montgomery curve constants A24=(A+2) and C24 = 4C.
+    // Output: projective Montgomery points P <- 2*P = (X2P:Z2P) and Q <- P+Q = (XQP:ZQP)
 	f2elm_t t0, t1, t2, pz, px;
 
 	fp2copy(PQ->X, px);
@@ -329,6 +330,7 @@ void xDBLADD_AC24(point_proj_t P, point_proj_t Q, const point_proj_t PQ, const f
 	fp2mul_mont(Q->X, pz, Q->X);					// XQ = ZPQ*[(XP+ZP)*(XQ-ZQ)+(XP-ZP)*(XQ+ZQ)]^2
 	fp2mul_mont(Q->Z, px, Q->Z);	                // ZQ = XPQ*[(XP+ZP)*(XQ-ZQ)-(XP-ZP)*(XQ+ZQ)]^2
 }
+
 static void swap_points(point_proj_t P, point_proj_t Q, const digit_t option)
 { // Swap points.
   // If option = 0 then P <- P and Q <- Q, else if option = 0xFF...FF then P <- Q and Q <- P
@@ -395,8 +397,10 @@ void LADDER3PT(const f2elm_t xP, const f2elm_t xQ, const f2elm_t xPQ, const digi
     }
 }
 
-void xQNTPL_ladder(const point_proj_t P, point_proj_t R, const f2elm_t A24plus, const f2elm_t C24)
-{
+void xQNTPL(const point_proj_t P, point_proj_t R, const f2elm_t A24plus, const f2elm_t C24)
+{   // Compute the quintuple of a point P and store the result in R, R = [5]P
+    // Input: a projective point P, curve projective coefficients A24plus = (A + 2C) and C24 = 4C
+    // output: a projective point Q, where Q = [5]P
 	point_proj_t Q, R0;
 	
 	fp2copy(P->X, R0->X);
@@ -409,10 +413,9 @@ void xQNTPL_ladder(const point_proj_t P, point_proj_t R, const f2elm_t A24plus, 
 }
 
 void criss_cross(f2elm_t alpha, f2elm_t beta, f2elm_t gamma, f2elm_t delta)
-{   // CrissCross operation corresponds to Costello and Hisil method
+{   // CrissCross operation 
     // Input: alpha, beta, gamma, and delta in K
-    // Output: alpha = (alpha*delta + beta*gamma)
-    //         beta = (alpha*delta - beta*gamma)
+    // Output: alpha = (alpha*delta + beta*gamma), and beta = (alpha*delta - beta*gamma)
 
     f2elm_t t0, t1;
     fp2mul_mont(alpha, delta, t0);
@@ -423,8 +426,8 @@ void criss_cross(f2elm_t alpha, f2elm_t beta, f2elm_t gamma, f2elm_t delta)
 
 void eval_5_isog(const point_proj_t P, const point_proj_t Pdbl, point_proj_t Q)
 {   // Compute the image of a point Q over a 5-isogeny 
-    // Inputs are two points P  coordinates, and a point Q
-    // Output is a point Q <- phi(Q)
+    // Inputs: two projective points P and Pdbl where Pdbl = [2]P along with a projective point Q 
+    // Output: the image of the point Q on the isogenous curve Q <- phi5(Q)
     f2elm_t X_hat, Z_hat, t0, t1, t2, t3, t4, t5;
 
 	fp2add(P->X, P->Z, t2);
@@ -449,7 +452,7 @@ void get_a_from_alpha(const point_proj_t alpha, f2elm_t A24plus, f2elm_t C24)
     // 2-torsion point alpha on the curve E. This function is used to retrieve 
     // curve coefficients from the image of 2-torsion points on the new curve
     // Input: the projective coordinates of alpha
-    // Output: Curve coefficients (A + 2C), 4C
+    // Output: Curve coefficients Aplus = (A + 2C), C24 = 4C
 	fp2sub(alpha->X, alpha->Z, A24plus);		// A24plus = (Xalpha - Zalpha)
 	fp2sqr_mont(A24plus, A24plus);				// A24plus = (Xalpha - Zalpha)^2
 	fp2correction(A24plus);
@@ -506,6 +509,6 @@ void xQNTPLe(const point_proj_t P, point_proj_t Q, const f2elm_t A24plus, const 
     copy_words((digit_t*)P, (digit_t*)Q, 2*2*NWORDS_FIELD);
 
     for (i = 0; i < e; i++) {
-        xQNTPL_ladder(Q, Q, A24plus, C24);
+        xQNTPL(Q, Q, A24plus, C24);
     }
 }
