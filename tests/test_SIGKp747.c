@@ -1,5 +1,5 @@
 /********************************************************************************************
-* Supersingular Isogeny Key Encapsulation Library
+* Supersingular Isogeny Group Key Agreement Library
 *
 * Abstract: benchmarking/testing isogeny-based key encapsulation mechanism SIKEp747
 *********************************************************************************************/ 

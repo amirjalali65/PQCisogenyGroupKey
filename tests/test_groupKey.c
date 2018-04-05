@@ -2,6 +2,7 @@
 * Supersingular Isogeny Group Key Agreement Library
 *
 * Abstract: benchmarking/testing isogeny-based group key agreement mechanism
+* Author: Amir Jalali               ajalali2016@fau.edu
 *********************************************************************************************/ 
 
 // Benchmark and test parameters 
