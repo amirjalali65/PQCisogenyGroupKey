@@ -9,7 +9,6 @@
     
 #include "../config.h"
 
-#define OS_LINUX     1
 
 #if defined(__LINUX__)        // Linux OS
     #define OS_TARGET OS_LINUX
