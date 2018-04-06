@@ -4,12 +4,6 @@
 * Abstract: configuration file and platform-dependent macros
 * This file is copied from the SIKE library developed by Microsoft Research
 *********************************************************************************************/  
-/********************************************************************************************
-* SIDH: an efficient supersingular isogeny cryptography library
-*
-* Abstract: configuration file and platform-dependent macros
-*********************************************************************************************/  
-
 #ifndef __CONFIG_H__
 #define __CONFIG_H__
 
