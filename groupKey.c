@@ -4,7 +4,6 @@
  *  This file contains the main operations for performing an instance of supersingular isogeny 
  *  group key operations between three parties. The computation of 3- and 4- isogenies are 
  *  implemented based on the SIKE and SIDH implementation developed by Microsoft Research.
- *  This work is an extension to the SIDH library developed by Microsoft Research.
  *
  *  Modified and created by Amir Jalali             ajalali2016@fau.edu 
  ******************************************************************************************************/
