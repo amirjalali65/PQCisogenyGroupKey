@@ -32,4 +32,7 @@ $ make
 ```
 ## Contributors
 The main construction of group key scheme from supersingular isogeny is proposed by Vlamidir Sukharev and David Jao.
-This implementation is a joint work with the inventor of the scheme, Reza Azarderakhsh and Amir Jalali. 
+
+This implementation is a joint work with the inventors of the scheme, Reza Azarderakhsh and Amir Jalali. 
+
+
