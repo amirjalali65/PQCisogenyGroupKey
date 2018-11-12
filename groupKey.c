@@ -394,11 +394,10 @@ int EphemeralKeyGeneration_C(const unsigned char *PrivateKeyC, unsigned char *Pu
 }
 
 int BSharedPublicFromA(const unsigned char *PrivateKeyB, const unsigned char *PublicKeyA, unsigned char *SharedPublicAB)
-{   // Bob's ephemeral shared secret computation
-    // It produces a shared secret key SharedSecretB using his secret key PrivateKeyB and Alice's public key PublicKeyA
-    // Inputs: Bob's PrivateKeyB is an integer in the range [0, 2^Floor(Log(2,oB)) - 1].
-    //         Alice's PublicKeyA consists of 3 elements in GF(p^2) encoded by removing leading 0 bytes.
-    // Output: a shared secret SharedSecretB that consists of one element in GF(p^2) encoded by removing leading 0 bytes.
+{   // Bob's shared public key generation 
+    // It produces a shared public key constructed between Alice and Bob using Bob's private key and Alice's Public key
+    // The private key is an integer in the range [0, 2^Floor(Log(2,3^153)) - 1], stored in 48 bytes.  
+    // The shared public key consists of 3 GF(p747^2) elements encoded in 567 bytes.
     point_proj_t R, phiA_PC = {0}, phiA_QC = {0}, phiA_RC = {0}, pts[MAX_INT_POINTS_BOB];
     f2elm_t coeff[3], PKB[3];
     f2elm_t A24plus = {0}, A24minus = {0}, A = {0};
@@ -471,7 +470,12 @@ int BSharedPublicFromA(const unsigned char *PrivateKeyB, const unsigned char *Pu
 }
 
 int CSharedSecretFromB(const unsigned char *PrivateKeyC, const unsigned char *PublicKeyB, const unsigned char *SharedPublicAB, unsigned char *SharedPublicBC, unsigned char *SharedSecret)
-{
+{   // Eve's shared secret key generation 
+    // It produces a shared public key constructed between Eve and Bob using Eve's private key and Bob's Public key
+    // It also generates the shared secret key from Eve's point of view using Alice and Bob shared public key
+    // The private key is an integer in the range [0, 2^Floor(Log(2,5^105)) - 1], stored in 48 bytes.  
+    // The shared public key consists of 3 GF(p747^2) elements encoded in 567 bytes.
+    // The shared secret key consists of one GF(p747^2) element encoded in 190 bytes.
     point_proj_t R, R_2 = {0}, phiAB_PC = {0}, phiAB_QC = {0}, phiAB_RC = {0}, phiB_PA = {0}, phiB_QA = {0}, phiB_RA = {0}, pts[MAX_INT_POINTS_EVE];
     f2elm_t PKB[3], PKAB[3], jinv;
     f2elm_t A24plus = {0}, C24 = {0}, A = {0};
@@ -613,7 +617,12 @@ int CSharedSecretFromB(const unsigned char *PrivateKeyC, const unsigned char *Pu
 }
 
 int ASharedSecretFromC(const unsigned char *PrivateKeyA, const unsigned char *PublicKeyC, const unsigned char *SharedPublicBC, unsigned char *SharedPublicAC, unsigned char *SharedSecret)
-{
+{   // Alice's shared secret key generation 
+    // It produces a shared public key constructed between Alice and Eve using Alice's private key and Eve's Public key
+    // It also generates the shared secret key from Alice's point of view using Bob and Eve shared public key
+    // The private key is an integer in the range [0, 2^260 - 1], stored in 48 bytes.  
+    // The shared public key consists of 3 GF(p747^2) elements encoded in 567 bytes.
+    // The shared secret key consists of one GF(p747^2) element encoded in 190 bytes.
     point_proj_t R, phiC_PB = {0}, phiC_QB = {0}, phiC_RB = {0}, pts[MAX_INT_POINTS_EVE];
     f2elm_t coeff[3], PKC[3], PKBC[3], jinv;
     f2elm_t A24plus = {0}, C24 = {0}, A = {0};
@@ -735,7 +744,10 @@ int ASharedSecretFromC(const unsigned char *PrivateKeyA, const unsigned char *Pu
 }
 
 int BSharedSecretFromA(const unsigned char *PrivateKeyB, const unsigned char *SharedPublicAC, unsigned char *SharedSecret)
-{
+{   // Bob's shared secret key generation 
+    // It generates the shared secret key from Bob's point of view using Alice and Eve shared public key
+    // The private key is an integer in the range [0, 2^Floor(Log(2,3^153)) - 1], stored in 48 bytes.  
+    // The shared secret key consists of one GF(p747^2) element encoded in 190 bytes.
     point_proj_t R, pts[MAX_INT_POINTS_BOB];
     f2elm_t coeff[3], PKAC[3], jinv;
     f2elm_t A24plus = {0}, A24minus = {0}, A = {0};
