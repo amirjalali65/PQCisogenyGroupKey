@@ -31,5 +31,5 @@ This version of the library is implemented in C and supports different platforms
 $ make 
 ```
 ## Contributors
-This library is designed and developed by Amir Jalai (ajalali[at]linkedin.com)
+This library is designed and developed by Amir Jalali (ajalali[at]linkedin.com)
 
