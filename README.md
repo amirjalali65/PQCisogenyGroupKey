@@ -30,6 +30,12 @@ This version of the library is implemented in C and supports different platforms
 ```sh
 $ make 
 ```
+## Running Tests
+After a successful build, run:
+```sh
+$ cd sigk && ./test_SIGK_747
+```
+
 ## Contributors
 Amir Jalali (ajalali[at]linkedin.com)
 Reza Azarderakhsh (razarderakhsh@fau.edu)
